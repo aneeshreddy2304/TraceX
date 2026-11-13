@@ -1,42 +1,38 @@
-![TraceX — conceptual project header](docs/assets/banner.svg)
+<p align="center"><img src="docs/assets/banner.svg" alt="TraceX — Explore proximity patterns through spatial clustering." width="100%"></p>
 
-# TraceX
+<p align="center"><img src="docs/assets/badges/python.svg" alt="python" height="28"> <img src="docs/assets/badges/streamlit.svg" alt="streamlit" height="28"> <img src="docs/assets/badges/pandas.svg" alt="pandas" height="28"> <img src="docs/assets/badges/scikit-learn.svg" alt="scikit-learn" height="28"></p>
 
-![Python](docs/assets/badges/python.svg) ![Streamlit](docs/assets/badges/streamlit.svg) ![pandas](docs/assets/badges/pandas.svg) ![scikit-learn](docs/assets/badges/scikit-learn.svg)
+<p align="center"><strong>A Streamlit prototype that turns timestamped coordinate records into explorable contact clusters and optional notifications.</strong></p>
 
-**A Streamlit prototype exploring spatial clustering and contact-notification workflows.**
+## Overview
 
-## Concept
+A Streamlit prototype that turns timestamped coordinate records into explorable contact clusters and optional notifications.
 
-TraceX loads timestamped coordinate records, groups locations with DBSCAN, displays candidate contacts, and includes an SMTP notification path. It is an educational clustering interface, not a validated public-health contact-tracing system.
+### Why it matters
+
+TraceX makes spatial-analysis workflows tangible: load location records, inspect DBSCAN groupings, and review candidate contacts in one interface.
+
+## Key features
+
+- Interactive contact and cluster exploration
+- DBSCAN-based grouping of latitude and longitude records
+- Visual plots for reviewing candidate proximity
+- Optional SMTP notification path
+
+## Architecture
 
 ```mermaid
 flowchart LR
-    J[Coordinate records] --> D[DBSCAN grouping]
-    U[Selected person] --> D
-    D --> UI[Candidate contacts and plots]
-    UI --> SMTP[Optional email delivery]
+  A[Coordinate records] --> B[Streamlit interface]
+  B --> C[DBSCAN clustering]
+  C --> D[Contact review + plots]
+  D --> E[Optional email notification]
 ```
 
-## What is in the repository
+## Technology stack
 
-- [main.py](main.py): Streamlit interface, clustering, plotting and SMTP helper.
-- `contacttracing_data.json`: expected input with User, TimeStamp, Latitude, Longitude and Email fields.
-- `virus.jpg`: the interface background asset.
+**python** · **streamlit** · **pandas** · **scikit learn**
 
-The committed contact dataset's provenance/synthetic status is unconfirmed. Do not copy personal identifiers or locations into portfolio images. Use permission-cleared synthetic records for demonstrations.
+## Getting started
 
-## Setup boundaries
-
-The code imports Streamlit, pandas, seaborn, matplotlib and scikit-learn; no dependency manifest or tested environment is provided. Relative data/image paths assume the repository root as the working directory.
-
-Once a compatible environment and permission-cleared data are available, the interface entry point is `streamlit run main.py`. The action button also attempts email delivery; SMTP configuration is currently placeholder-based. Review that behavior before using the button.
-
-## Important correctness limitations
-
-- Haversine DBSCAN receives coordinates in degrees with an incorrectly interpreted epsilon. The intended six-foot distance is **not correctly enforced**.
-- Cluster membership can connect people indirectly; it does not prove direct proximity.
-- Timestamps are not used to require simultaneous presence.
-- No detection accuracy, epidemiological effectiveness, or successful notification result has been established.
-
-The useful engineering exercise is the combination of spatial data, a review interface and notification handling. Distance/time semantics must be corrected before presenting contact results as meaningful.
+Install the imported Python packages, place the expected JSON and image assets in the repository root, then run `streamlit run main.py`. Use synthetic, permission-cleared location data for demonstrations.
