@@ -21,7 +21,30 @@ Proximity data is difficult to interpret from rows of coordinates alone. TraceX 
 
 ## System architecture
 
-![TraceX system architecture](docs/architecture-overview.svg)
+```mermaid
+flowchart TB
+    subgraph Interface["Streamlit application — main.py"]
+        Upload["Load contacttracing_data.json"]
+        Person["Select a person"]
+        Review["Contact list and Seaborn / Matplotlib plots"]
+        Notify["Notification action"]
+    end
+
+    subgraph Analysis["Spatial analysis"]
+        Frame["pandas DataFrame<br/>user • timestamp • latitude • longitude • email"]
+        Cluster["scikit-learn DBSCAN<br/>haversine metric"]
+        Match["Candidate contacts from cluster membership"]
+    end
+
+    Store[("JSON contact records")]
+    SMTP["SMTP server"]
+
+    Store --> Upload --> Frame
+    Person --> Cluster
+    Frame --> Cluster --> Match
+    Match --> Review
+    Match --> Notify --> SMTP
+```
 
 ### How the workflow operates
 
