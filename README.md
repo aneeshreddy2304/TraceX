@@ -1,38 +1,62 @@
-<p align="center"><img src="docs/assets/banner.svg" alt="TraceX — Explore proximity patterns through spatial clustering." width="100%"></p>
+# TraceX
 
-<p align="center"><img src="docs/assets/badges/python.svg" alt="python" height="28"> <img src="docs/assets/badges/streamlit.svg" alt="streamlit" height="28"> <img src="docs/assets/badges/pandas.svg" alt="pandas" height="28"> <img src="docs/assets/badges/scikit-learn.svg" alt="scikit-learn" height="28"></p>
-
-<p align="center"><strong>A Streamlit prototype that turns timestamped coordinate records into explorable contact clusters and optional notifications.</strong></p>
+**Spatial clustering and contact-tracing exploration**
 
 ## Overview
 
-A Streamlit prototype that turns timestamped coordinate records into explorable contact clusters and optional notifications.
+TraceX is a Streamlit prototype for exploring proximity patterns in location records using DBSCAN clustering. It loads structured coordinates and user identifiers, groups nearby observations, identifies potential contacts for a selected individual, and displays spatial scatter plots. An optional SMTP integration can send notifications to matching contacts.
 
 ### Why it matters
 
-TraceX makes spatial-analysis workflows tangible: load location records, inspect DBSCAN groupings, and review candidate contacts in one interface.
+Proximity data is difficult to interpret from rows of coordinates alone. TraceX turns those records into interactive contact and cluster views, demonstrating how a clustering algorithm can support investigation and communication workflows.
 
-## Key features
+## Key capabilities
 
-- Interactive contact and cluster exploration
-- DBSCAN-based grouping of latitude and longitude records
-- Visual plots for reviewing candidate proximity
-- Optional SMTP notification path
+- Loads user, latitude, longitude, and email records from a local JSON-lines file.
+- Provides a Streamlit input for selecting the person whose contacts should be explored.
+- Uses DBSCAN to assign spatial clusters and identify other users in associated groups.
+- Displays coordinate scatter plots of users and cluster assignments.
+- Supports optional SMTP notifications for identified contacts.
+- Keeps visual exploration and notification logic within a small Python application.
 
-## Architecture
+## System architecture
 
-```mermaid
-flowchart LR
-  A[Coordinate records] --> B[Streamlit interface]
-  B --> C[DBSCAN clustering]
-  C --> D[Contact review + plots]
-  D --> E[Optional email notification]
-```
+![TraceX system architecture](docs/architecture-overview.svg)
+
+### How the workflow operates
+
+The application reads `contacttracing_data.json` and uses the selected name to look up the relevant DBSCAN clusters. It extracts other users associated with those clusters and displays candidate contacts. Scatter plots show the underlying coordinate distribution and computed groups.
+
+If the notification path is enabled, the script looks up corresponding email addresses and uses SMTP to send messages. Location access and messaging should be restricted to permission-cleared, synthetic demonstrations.
 
 ## Technology stack
 
-**python** · **streamlit** · **pandas** · **scikit learn**
+| Technology | Purpose |
+| --- | --- |
+| **Python / pandas** | Load and filter location records |
+| **Streamlit** | Interactive controls and outputs |
+| **scikit-learn (DBSCAN)** | Spatial clustering |
+| **Matplotlib / seaborn** | Coordinate scatter plots |
+| **SMTP** | Optional email notifications |
+
+## Repository structure
+
+```text
+main.py                  Streamlit UI and clustering logic
+contacttracing_data.json Sample records used by the prototype
+virus.jpg                Application background image
+README.md                Project documentation
+```
 
 ## Getting started
 
-Install the imported Python packages, place the expected JSON and image assets in the repository root, then run `streamlit run main.py`. Use synthetic, permission-cleared location data for demonstrations.
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install streamlit pandas scikit-learn seaborn matplotlib
+streamlit run main.py
+```
+
+## Notes and prerequisites
+
+This is a learning prototype, not validated epidemiological contact tracing. The implementation currently applies a haversine distance metric to latitude/longitude inputs without converting coordinates to radians; results should not be interpreted as reliable physical exposure distances. SMTP credentials are placeholders in the code and should be loaded from configuration before enabling messaging.
